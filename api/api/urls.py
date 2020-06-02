@@ -4,7 +4,7 @@ from rest_framework import routers
 from core import views
 
 router = routers.DefaultRouter()
-router.register('clientes', views.ClientViewSet)
+router.register('tools', views.ToolViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),

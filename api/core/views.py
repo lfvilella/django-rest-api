@@ -3,6 +3,6 @@ from rest_framework import viewsets
 from . import models, serializers
 
 
-class ClientViewSet(viewsets.ModelViewSet):
-    queryset = models.Client.objects.all()
-    serializer_class = serializers.ClientSerializer
+class ToolViewSet(viewsets.ModelViewSet):
+    queryset = models.Tool.objects.all()
+    serializer_class = serializers.ToolSerializer

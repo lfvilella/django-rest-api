@@ -2,7 +2,7 @@ from rest_framework import serializers
 from . import models
 
 
-class ClientSerializer(serializers.ModelSerializer):
+class ToolSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Client
-        fields = ['id', 'name', 'adress', 'age']
+        model = models.Tool
+        fields = ['id', 'title', 'link', 'description']

@@ -1,10 +1,11 @@
 from django.db import models
 
 
-class Client(models.Model):
-    name = models.CharField(max_length=50)
-    adress = models.CharField(max_length=200)
-    age = models.IntegerField()
+class Tool(models.Model):
+    title = models.CharField(max_length=50)
+    link = models.CharField(max_length=250)
+    description = models.TextField()
+    # tags = 
 
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.title}'
