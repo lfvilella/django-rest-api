@@ -4,7 +4,7 @@ from django.contrib.postgres.fields import ArrayField
 
 class Tool(models.Model):
     title = models.CharField(max_length=50)
-    link = models.CharField(max_length=250)
+    link = models.URLField(max_length=200)
     description = models.TextField()
     tags = ArrayField(models.CharField(max_length=200, blank=True))
 
