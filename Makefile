@@ -1,0 +1,1 @@
+#docker-compose exec -u postgres db psql -c 'CREATE DATABASE rest_db ENCODING 'UTF8' TEMPLATE template0;'
