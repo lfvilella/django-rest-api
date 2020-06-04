@@ -21,8 +21,15 @@ class TestToolAPI(APITestCase):
                 "calendar",
             ],
         }
+        self.new_data = {
+            'title' : "GitHub",
+            'link' : "https://github.com",
+            'description' : "Some description here",
+            'tags' : ["git", "tag1"],
+        }
         
-    def test_CREATE_GET_PUT_DELETE(self):
+    def test_CREATE_GET_PUT_PATCH_DELETE(self):
+        # CREATE
         self.assertEqual(models.Tool.objects.count(), 0)
         response = self.client.post(self.url, self.data, format='json')
 
@@ -41,29 +48,32 @@ class TestToolAPI(APITestCase):
         self.assertEqual(self.data['description'], tool_from_db.description)
         self.assertEqual(self.data['tags'], tool_from_db.tags)
 
-        # Get tool by ID
+        # GET - tool by ID
         request = self.client.get(self.url+'1/')
         self.assertEqual(request.status_code, 200)
 
-        # Changing with PUT verb
-        new_data = {
-            'title' : "GitHub",
-            'link' : "https://github.com",
-            'description' : "Some description here",
-            'tags' : ["git", "tag1"],
-        }
-        request = self.client.put(self.url+'1/', new_data, format='json')
-
+        # PUT
+        response = self.client.put(self.url+'1/', self.new_data, format='json')
         tool_from_db = models.Tool.objects.all().first() # Here I update the variable to get the right Tool
 
-        new_data['id'] = tool_from_db.id
-        self.assertEqual(new_data, request.data)
+        self.new_data['id'] = tool_from_db.id
+        self.assertEqual(self.new_data, response.data)
 
-        self.assertEqual(new_data['id'], tool_from_db.id)
-        self.assertEqual(new_data['title'], tool_from_db.title)
-        self.assertEqual(new_data['link'], tool_from_db.link)
-        self.assertEqual(new_data['description'], tool_from_db.description)
-        self.assertEqual(new_data['tags'], tool_from_db.tags)
+        self.assertEqual(self.new_data['id'], tool_from_db.id)
+        self.assertEqual(self.new_data['title'], tool_from_db.title)
+        self.assertEqual(self.new_data['link'], tool_from_db.link)
+        self.assertEqual(self.new_data['description'], tool_from_db.description)
+        self.assertEqual(self.new_data['tags'], tool_from_db.tags)
+
+        # PATCH
+        new_title = "New Title With Patch Verb"
+        response = self.client.patch(self.url+'1/', {'title': new_title}, format='json')
+        tool_from_db = models.Tool.objects.all().first()
+        self.assertEqual(new_title, tool_from_db.title)
+
+        # DELETE
+        response = self.client.delete(self.url+'1/')
+        self.assertEqual(response.status_code, 204)
 
     def test_wrong_link(self):
         self.data['link'] = "wrongURL"
