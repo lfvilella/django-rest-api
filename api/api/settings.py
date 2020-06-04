@@ -12,6 +12,14 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
+from environs import Env
+from dotenv import load_dotenv
+from dotenv import find_dotenv
+
+
+env = Env()
+load_dotenv(find_dotenv())
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -20,12 +28,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '!s^#=c2=7=w1ay%jk(6(j=sy30_sk!o__+$6*df@@km5%_%3xo'
+SECRET_KEY = env("SECRET_KEY",
+                 "!s^#=c2=7=w1ay%jk(6(j=sy30_sk!o__+$6*df@@km5%_%3xo")
+
+URL_SECRET_KEY = env("URL_SECRET_KEY", SECRET_KEY * 2)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool("DEBUG", True)
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", ("localhost", "127.0.0.1"))
 
 
 # Application definition
@@ -130,3 +141,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = env('ACCOUNT_DEFAULT_HTTP_PROTOCOL', 'http')
