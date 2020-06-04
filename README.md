@@ -61,3 +61,14 @@ Resources related to tools in the API.
 
 ### Delete tool [DELETE]
 - Response 204 (application/json)
+
+## Search tools by Tag [ /tools?tags=tag-name ]
+If you have many tools, you can search on by URL using:
+
+* Simple tag: ``` 'http://localhost:3000/tools/tags=tag-name1' ```
+
+* Or more tags: ``` 'http://localhost:3000/tools/tags=tag-name1&tags=tag-name2' ```
+
+
+### Get tools by filter [GET]
+- Response 200 (application/json)
