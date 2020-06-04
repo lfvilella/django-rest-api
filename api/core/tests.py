@@ -23,7 +23,6 @@ class TestToolAPI(APITestCase):
         }
         
     def test_create(self):
-
         self.assertEqual(models.Tool.objects.count(), 0)
         response = self.client.post(self.url, self.data, format='json')
 
@@ -42,23 +41,40 @@ class TestToolAPI(APITestCase):
         self.assertEqual(self.data['description'], tool_from_db.description)
         self.assertEqual(self.data['tags'], tool_from_db.tags)
 
-
-    # def test_wrong_url_on_link_field(self):
-    #     tool = models.Tool()
-    #     tool.title = "TitleToWrongURL"
-    #     tool.link = "wrongURL"
-    #     tool.description = self.description
-    #     tool.tags = self.tags
-    #     tool.save()
-
-    #     self.assertRaises(TypeError)
+    def test_wrong_link(self):
+        self.data['link'] = "wrongURL"
+        response = self.client.post(self.url, self.data, format='json')
+        self.assertRaises(TypeError)
     
-    # def test_none_array_on_tags_field(self):
-    #     tool = models.Tool()
-    #     tool.title = "TitleToWrongTags"
-    #     tool.link = self.link
-    #     tool.description = self.description
-    #     tool.tags = []
-    #     tool.save()
+    def test_none_tags(self):
+        self.data['tags'] = ""
+        response = self.client.post(self.url, self.data, format='json')
+        self.assertRaises(TypeError)
+    
+    def test_update(self):
+        # Creating Again
+        self.assertEqual(models.Tool.objects.count(), 0)
+        response = self.client.post(self.url, self.data, format='json')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(models.Tool.objects.count(), 1)
+        
+        breakpoint()
+        # Changing with PUT verb
+        new_data = {
+            'title' : "GitHub",
+            'link' : "https://github.com",
+            'description' : "Some description here",
+            'tags' : ["git", "tag1"],
+        }
+        request = self.client.put(self.url+'1/', new_data)
 
-    #     self.assertRaises(TypeError)
+        tool_from_db = models.Tool.objects.all().first()
+
+        new_data['id'] = tool_from_db.id
+        self.assertEqual(new_data, request.data)
+
+        self.assertEqual(new_data['id'], tool_from_db.id)
+        self.assertEqual(new_data['title'], tool_from_db.title)
+        self.assertEqual(new_data['link'], tool_from_db.link)
+        self.assertEqual(new_data['description'], tool_from_db.description)
+        self.assertEqual(new_data['tags'], tool_from_db.tags)
