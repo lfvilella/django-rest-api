@@ -6,6 +6,13 @@ This is an REST API Tools on the Bossabox challenge. Where I develop an API with
 
 I use Python/Django Rest Framework to develop it, I use Postgres as a Database and Docker to automate the stuff.
 
+## To run
+```
+$ make build
+$ make db
+$ make up
+```
+
 # Group Tools
 
 Resources related to tools in the API.
