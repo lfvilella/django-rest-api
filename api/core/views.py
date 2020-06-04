@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import viewsets
 from django.http import Http404
 from . import models, serializers
@@ -15,7 +14,7 @@ class ToolViewSet(viewsets.ModelViewSet):
         tags = query_params.getlist('tags', [])
         if tags:
             queryset = queryset.filter(tags__contains=tags)
-         
+
         title = query_params.get('title', None)
         if title:
             queryset = queryset.filter(title=title)
@@ -26,5 +25,5 @@ class ToolViewSet(viewsets.ModelViewSet):
 
         if not queryset.exists():
             raise Http404
-        
+
         return queryset

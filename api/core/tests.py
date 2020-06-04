@@ -1,4 +1,3 @@
-from django.urls import reverse
 from rest_framework.test import APITestCase
 from . import models
 
@@ -22,12 +21,12 @@ class TestToolAPI(APITestCase):
             ],
         }
         self.new_data = {
-            'title' : "GitHub",
-            'link' : "https://github.com",
-            'description' : "Some description here",
-            'tags' : ["git", "tag1"],
+            'title': "GitHub",
+            'link': "https://github.com",
+            'description': "Some description here",
+            'tags': ["git", "tag1"],
         }
-        
+
     def test_CREATE_GET_PUT_PATCH_DELETE(self):
         # CREATE
         self.assertEqual(models.Tool.objects.count(), 0)
@@ -54,7 +53,8 @@ class TestToolAPI(APITestCase):
 
         # PUT
         response = self.client.put(self.url+'1/', self.new_data, format='json')
-        tool_from_db = models.Tool.objects.all().first() # Here I update the variable to get the right Tool
+        # Line below, I update the variable to get the right Tool
+        tool_from_db = models.Tool.objects.all().first()
 
         self.new_data['id'] = tool_from_db.id
         self.assertEqual(self.new_data, response.data)
@@ -62,12 +62,15 @@ class TestToolAPI(APITestCase):
         self.assertEqual(self.new_data['id'], tool_from_db.id)
         self.assertEqual(self.new_data['title'], tool_from_db.title)
         self.assertEqual(self.new_data['link'], tool_from_db.link)
-        self.assertEqual(self.new_data['description'], tool_from_db.description)
+        self.assertEqual(self.new_data['description'],
+                         tool_from_db.description)
         self.assertEqual(self.new_data['tags'], tool_from_db.tags)
 
         # PATCH
         new_title = "New Title With Patch Verb"
-        response = self.client.patch(self.url+'1/', {'title': new_title}, format='json')
+        response = self.client.patch(self.url+'1/',
+                                     {'title': new_title},
+                                     format='json')
         tool_from_db = models.Tool.objects.all().first()
         self.assertEqual(new_title, tool_from_db.title)
 
@@ -77,19 +80,17 @@ class TestToolAPI(APITestCase):
 
     def test_create_with_wrong_link(self):
         self.data['link'] = "wrongURL"
-        response = self.client.post(self.url, self.data, format='json')
+        self.client.post(self.url, self.data, format='json')
         self.assertRaises(TypeError)
-    
+
     def test_create_with_none_tags(self):
         self.data['tags'] = ""
-        response = self.client.post(self.url, self.data, format='json')
+        self.client.post(self.url, self.data, format='json')
         self.assertRaises(TypeError)
 
     def test_search_tags(self):
         response = self.client.post(self.url, self.data, format='json')
         self.assertEqual(response.status_code, 201)
-        
-        tool_from_db = models.Tool.objects.all().first()
 
         request = self.client.get(self.url+'?tags=calendar')
         self.assertEqual(request.status_code, 200)
