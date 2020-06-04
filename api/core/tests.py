@@ -75,12 +75,25 @@ class TestToolAPI(APITestCase):
         response = self.client.delete(self.url+'1/')
         self.assertEqual(response.status_code, 204)
 
-    def test_wrong_link(self):
+    def test_create_with_wrong_link(self):
         self.data['link'] = "wrongURL"
         response = self.client.post(self.url, self.data, format='json')
         self.assertRaises(TypeError)
     
-    def test_none_tags(self):
+    def test_create_with_none_tags(self):
         self.data['tags'] = ""
         response = self.client.post(self.url, self.data, format='json')
         self.assertRaises(TypeError)
+
+    def test_search_tags(self):
+        response = self.client.post(self.url, self.data, format='json')
+        self.assertEqual(response.status_code, 201)
+        
+        tool_from_db = models.Tool.objects.all().first()
+
+        request = self.client.get(self.url+'?tags=calendar')
+        self.assertEqual(request.status_code, 200)
+        self.assertTrue('calendar' in request.data[0]['tags'])
+
+        request = self.client.get(self.url+'?tags=calendar&tags=git')
+        self.assertEqual(request.status_code, 404)
