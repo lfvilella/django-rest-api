@@ -23,6 +23,17 @@ services:
             - "${BACKEND_HOST_PORT}8000"
         stdin_open: true
         tty: true
+        networks:
+            - nginx-gateway
         command: ${RUNSERVER:-/bin/bash}
         environment:
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-123change}    
+            VIRTUAL_HOST: bossabox-api.lfvilella.com
+            VIRTUAL_HOST_ALIAS: bossabox-api.lfvilella.com,www.bossabox-api.lfvilella.com
+            LETSENCRYPT_HOST: bossabox-api.lfvilella.com,www.bossabox-api.lfvilella.com
+            LETSENCRYPT_EMAIL: vilella.luisfelipe+bossabox-api.lfvilella.com@gmail.com
+
+networks:
+    nginx-gateway:
+        external:
+            name: nginx-gateway
