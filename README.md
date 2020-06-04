@@ -4,7 +4,11 @@ FORMAT: A1
 
 This is an REST API Tools on the Bossabox challenge. Where I develop an API with the fields "title", "link", "description" and "tags".
 
-I use Python/Django Rest Framework to develop it, I use Postgres as a Database and Docker to automate the stuff.
+I use to develop:
+- Python
+- Django Rest Framework
+- Postgres
+- Docker / docker-compose
 
 ## To run
 ```
