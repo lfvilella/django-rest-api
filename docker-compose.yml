@@ -8,6 +8,8 @@ services:
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-123change}
         volumes: 
             - ./env/db:/var/lib/postgresql/data
+        networks: 
+            - app-newtwork
 
     app:
         build: api
@@ -24,7 +26,9 @@ services:
         stdin_open: true
         tty: true
         networks:
+            - app-newtwork
             - nginx-gateway
+    
         command: ${RUNSERVER:-/bin/bash}
         environment:
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-123change}    
@@ -34,6 +38,7 @@ services:
             LETSENCRYPT_EMAIL: vilella.luisfelipe+bossabox-api.lfvilella.com@gmail.com
 
 networks:
+    app-newtwork:
     nginx-gateway:
         external:
             name: nginx-gateway
