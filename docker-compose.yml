@@ -19,8 +19,8 @@ services:
         links: 
             - db:db_postgres
         volumes: 
-            - ./api:/app
-        working_dir: /app
+            - ./:/app
+        working_dir: /app/api
         ports: 
             - "${BACKEND_HOST_PORT}8000"
         stdin_open: true
