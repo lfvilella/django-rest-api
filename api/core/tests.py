@@ -78,23 +78,79 @@ class TestToolAPI(APITestCase):
         response = self.client.delete(self.url+'1/')
         self.assertEqual(response.status_code, 204)
 
-    def test_create_with_wrong_link(self):
+    def test_create_with_wrong_and_none_title(self):
+        self.data['title'] = 123321
+        self.client.post(self.url, self.data, format='json')
+        self.assertRaises(TypeError)
+        
+        self.data['title'] = ""
+        self.client.post(self.url, self.data, format='json')
+        self.assertRaises(TypeError)
+    
+    def test_create_with_wrong_and_none_link(self):
         self.data['link'] = "wrongURL"
         self.client.post(self.url, self.data, format='json')
         self.assertRaises(TypeError)
 
-    def test_create_with_none_tags(self):
+        self.data['link'] = ""
+        self.client.post(self.url, self.data, format='json')
+        self.assertRaises(TypeError)
+    
+    def test_create_with_wrong_and_none_description(self):
+        self.data['description'] = 123321
+        self.client.post(self.url, self.data, format='json')
+        self.assertRaises(TypeError)
+
+        self.data['description'] = ""
+        self.client.post(self.url, self.data, format='json')
+        self.assertRaises(TypeError)
+
+    def test_create_with_wrong_and_none_tags(self):
+        self.data['tags'] = {'tag1': 'value1'}
+        self.client.post(self.url, self.data, format='json')
+        self.assertRaises(TypeError)
+
         self.data['tags'] = ""
         self.client.post(self.url, self.data, format='json')
         self.assertRaises(TypeError)
 
-    def test_search_tags(self):
+    def test_filters(self):
         response = self.client.post(self.url, self.data, format='json')
         self.assertEqual(response.status_code, 201)
 
+        # TITLE
+        request = self.client.get(self.url+'?title=Notion')
+        self.assertEqual(request.status_code, 200)
+        self.assertEqual('Notion', request.data[0]['title'])
+
+        bad_request = self.client.get(self.url+'?title=NoOne')
+        self.assertEqual(bad_request.status_code, 404)
+        
+        # LINK
+        request = self.client.get(self.url+'?link=https://notion.so')
+        self.assertEqual(request.status_code, 200)
+        self.assertEqual('https://notion.so', request.data[0]['link'])
+
+        bad_request = self.client.get(self.url+'?link=https://bossabox.com')
+        self.assertEqual(bad_request.status_code, 404)
+
+        # TAGS
         request = self.client.get(self.url+'?tags=calendar')
         self.assertEqual(request.status_code, 200)
         self.assertTrue('calendar' in request.data[0]['tags'])
 
+        bad_request = self.client.get(self.url+'?tags=NoTAGS')
+        self.assertEqual(bad_request.status_code, 404)
+
+        # Get wrong tags return 404
         request = self.client.get(self.url+'?tags=calendar&tags=git')
         self.assertEqual(request.status_code, 404)
+
+    def test_invalid_url(self):
+        request = self.client.get('/tool/')
+        self.assertEqual(request.status_code, 404)
+    
+    def test_invalid_id(self):
+        request = self.client.get(self.url+'idInvalid/')
+        self.assertEqual(request.status_code, 404)
+    
