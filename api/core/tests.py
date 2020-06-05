@@ -82,11 +82,11 @@ class TestToolAPI(APITestCase):
         self.data['title'] = 123321
         self.client.post(self.url, self.data, format='json')
         self.assertRaises(TypeError)
-        
+
         self.data['title'] = ""
         self.client.post(self.url, self.data, format='json')
         self.assertRaises(TypeError)
-    
+
     def test_create_with_wrong_and_none_link(self):
         self.data['link'] = "wrongURL"
         self.client.post(self.url, self.data, format='json')
@@ -95,7 +95,7 @@ class TestToolAPI(APITestCase):
         self.data['link'] = ""
         self.client.post(self.url, self.data, format='json')
         self.assertRaises(TypeError)
-    
+
     def test_create_with_wrong_and_none_description(self):
         self.data['description'] = 123321
         self.client.post(self.url, self.data, format='json')
@@ -125,7 +125,7 @@ class TestToolAPI(APITestCase):
 
         bad_request = self.client.get(self.url+'?title=NoOne')
         self.assertEqual(bad_request.status_code, 404)
-        
+
         # LINK
         request = self.client.get(self.url+'?link=https://notion.so')
         self.assertEqual(request.status_code, 200)
@@ -149,8 +149,7 @@ class TestToolAPI(APITestCase):
     def test_invalid_url(self):
         request = self.client.get('/tool/')
         self.assertEqual(request.status_code, 404)
-    
+
     def test_invalid_id(self):
         request = self.client.get(self.url+'idInvalid/')
         self.assertEqual(request.status_code, 404)
-    
